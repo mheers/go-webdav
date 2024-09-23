@@ -20,6 +20,7 @@ var (
 	GetContentTypeName   = xml.Name{Namespace, "getcontenttype"}
 	GetLastModifiedName  = xml.Name{Namespace, "getlastmodified"}
 	GetETagName          = xml.Name{Namespace, "getetag"}
+	GetCTagName          = xml.Name{"http://calendarserver.org/ns/", "getctag"}
 
 	CurrentUserPrincipalName    = xml.Name{Namespace, "current-user-principal"}
 	CurrentUserPrivilegeSetName = xml.Name{Namespace, "current-user-privilege-set"}
@@ -392,6 +393,30 @@ func (etag ETag) MarshalText() ([]byte, error) {
 
 func (etag ETag) String() string {
 	return fmt.Sprintf("%q", string(etag))
+}
+
+type GetCTag struct {
+	XMLName xml.Name `xml:"http://calendarserver.org/ns/: getctag"`
+	CTag    CTag     `xml:",chardata"`
+}
+
+type CTag string
+
+func (ctag *CTag) UnmarshalText(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return fmt.Errorf("webdav: failed to unquote CTag: %v", err)
+	}
+	*ctag = CTag(s)
+	return nil
+}
+
+func (ctag CTag) MarshalText() ([]byte, error) {
+	return []byte(ctag.String()), nil
+}
+
+func (ctag CTag) String() string {
+	return fmt.Sprintf("%q", string(ctag))
 }
 
 // https://tools.ietf.org/html/rfc4918#section-14.5

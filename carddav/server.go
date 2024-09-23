@@ -536,6 +536,11 @@ func (b *backend) propFindAddressBook(ctx context.Context, propfind *internal.Pr
 			}, nil
 		},
 	}
+	if ab.CTag != "" {
+		props[internal.GetCTagName] = func(*internal.RawXMLValue) (interface{}, error) {
+			return &internal.GetCTag{CTag: internal.CTag(ab.CTag)}, nil
+		}
+	}
 
 	if ab.Name != "" {
 		props[internal.DisplayNameName] = func(*internal.RawXMLValue) (interface{}, error) {

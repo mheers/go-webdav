@@ -28,6 +28,7 @@ type AddressBook struct {
 	Description          string
 	MaxResourceSize      int64
 	SupportedAddressData []AddressDataType
+	CTag                 string
 }
 
 func (ab *AddressBook) SupportsAddressData(contentType, version string) bool {
